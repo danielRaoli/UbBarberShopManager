@@ -1,5 +1,7 @@
 ﻿using BarberShopApi.Application.Exceptions;
 using BarberShopApi.Application.Requests.Barber;
+using BarberShopApi.Application.Requests.Barber.CreatedBarber;
+using BarberShopApi.Application.Requests.Barber.EditBarber;
 using BarberShopApi.Application.Responses;
 using BarberShopApi.Domain.Entities;
 using BarberShopApi.Domain.Repositories;
@@ -49,7 +51,7 @@ namespace BarberShopApi.Infrastructure.Repositories
 
         public async Task<Response<BarberShop>> GetBarberShop(GetBarberShopRequest request)
         {
-            var barberShopDb = await _context.BarberShops.Include(b => b.Barbers).FirstOrDefaultAsync(b => b.Id == request.Id);
+            var barberShopDb = await _context.BarberShops.Include(b => b.Barbers).ThenInclude(b => b.Services).FirstOrDefaultAsync(b => b.Id == request.Id);
             if (barberShopDb is null)
             {
                 throw new NotFoundException(ResourceErrorMessages.NOT_FOUND_OBJECT);
@@ -92,5 +94,41 @@ namespace BarberShopApi.Infrastructure.Repositories
             return new Response<Barber>(entityBarber, 201, "Barber registered with success");
 
         }
+
+        public async Task<Response<Barber>> EditBarber(EditBarberRequest request)
+        {
+            var entityBarber = await _context.Barbers.FirstOrDefaultAsync(b => b.BarberShopId == request.BarberShopId && b.Id == request.BarberId);
+
+            if (entityBarber is null) 
+            { 
+                throw new NotFoundException(ResourceErrorMessages.NOT_FOUND_OBJECT);
+            }
+
+            entityBarber.Name = request.Name;
+            entityBarber.OpeningTime = request.OpeningTime;
+            entityBarber.ClosingTime = request.ClosingTime; 
+
+            _context.Barbers.Update(entityBarber);
+            await _context.SaveChangesAsync();
+
+            return new Response<Barber>(entityBarber, 204, "barber edited with success");
+        }
+
+        public async Task<Response<Barber>> DeleteBarber(DeleteBarberRequest request)
+        {
+            var entityBarber = await _context.Barbers.FirstOrDefaultAsync(b => b.BarberShopId == request.BarberShopId && b.Id == request.BarberId);
+
+            if(entityBarber is null)
+            {
+                throw new NotFoundException(ResourceErrorMessages.NOT_FOUND_OBJECT);
+            }
+
+            _context.Barbers.Remove(entityBarber);
+            await _context.SaveChangesAsync();
+
+            return new Response<Barber>(entityBarber, 204, "Barber removed with success");
+        }
+
+
     }
 }

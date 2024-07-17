@@ -1,4 +1,6 @@
 ﻿using BarberShopApi.Application.Requests.Barber;
+using BarberShopApi.Application.Requests.Barber.CreatedBarber;
+using BarberShopApi.Application.Requests.Barber.EditBarber;
 using BarberShopApi.Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +18,7 @@ namespace BarberShopApi.Controllers
             _repository = repository;
         }
 
+        // Somente contas com role BarberShop
         [HttpPost]
         public async Task<IActionResult> CreateBarberShop(CreateBarberShopRequest request)
         {
@@ -23,7 +26,7 @@ namespace BarberShopApi.Controllers
             var response = await _repository.CreateBarberShop(request);
             return Ok(response);
         }
-
+        // Todos os  usuarios
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBarberShop([FromRoute] Guid id)
         {
@@ -33,6 +36,7 @@ namespace BarberShopApi.Controllers
             return Ok(response);
         }
 
+        //Somente Usuario Comum
         [HttpGet]
         public async Task<IActionResult> GetAllBarberShops()
         {
@@ -60,14 +64,40 @@ namespace BarberShopApi.Controllers
             return Ok(response);
         }
 
-        [HttpPost("{barbershopid}")]
-        public async Task<IActionResult> RegisterBarber([FromRoute] Guid barbershopid, [FromBody]CreateBarberRequest request)
+        [HttpPost("{barbershopid}/barber")]
+        public async Task<IActionResult> RegisterBarber([FromRoute] Guid barbershopid, [FromBody] CreateBarberRequest request)
         {
             request.BarberShopId = barbershopid;
             var response = _repository.CreateBarber(request);
 
             return Ok(response);
         }
+
+
+        [HttpPut("{barbershopid}/barber/{barberid}")]
+        public async Task<IActionResult> UpdateBarber([FromRoute] Guid barbershopid, [FromRoute] Guid barberid, [FromBody] EditBarberRequest request)
+        {
+            request.Validate();
+            request.BarberShopId = barbershopid;
+            request.BarberId = barberid;
+
+            var response = _repository.EditBarber(request);
+            return Ok(response);
+        }
+
+        [HttpDelete("{barbershopid}/barber/{barberid}")]
+        public async Task<IActionResult> DeleteBarber([FromRoute] Guid barbershopid, [FromRoute] Guid barberid)
+        {
+            var request = new DeleteBarberRequest
+            {
+                BarberShopId = barbershopid,
+                BarberId = barberid
+            };
+
+            var response = _repository.DeleteBarber(request);
+            return Ok(response);
+        }
+
 
     }
 }

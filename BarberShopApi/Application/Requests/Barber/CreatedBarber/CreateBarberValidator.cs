@@ -1,7 +1,7 @@
 ﻿using BarberShopApi.Application.Exceptions;
 using FluentValidation;
 
-namespace BarberShopApi.Application.Requests.Barber
+namespace BarberShopApi.Application.Requests.Barber.CreatedBarber
 {
     public class CreateBarberValidator : AbstractValidator<CreateBarberRequest>
     {

@@ -123,6 +123,9 @@
   <data name="INVALID_INTERVAL_HOURS" xml:space="preserve">
     <value>this break in hours is not valid</value>
   </data>
+  <data name="INVALID_PRICE" xml:space="preserve">
+    <value>the price should be at least 5.0</value>
+  </data>
   <data name="NAME_IS_EMPTY" xml:space="preserve">
     <value>the name field cannot be empty</value>
   </data>

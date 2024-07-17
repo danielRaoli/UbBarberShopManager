@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("BarberDb"));
 builder.Services.AddScoped<IBarberShopRepository, BarberShopRepository>();
+builder.Services.AddScoped<IBarberRepository, BarberRepository>();
 
 
 builder.Services.AddMvc(options => options.Filters.Add(typeof(BarberExceptionFilter)));

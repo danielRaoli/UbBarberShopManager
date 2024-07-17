@@ -1,14 +1,11 @@
 ﻿using BarberShopApi.Application.Exceptions;
-using BarberShopApi.Domain.Entities;
-using System.Text.Json.Serialization;
 
-namespace BarberShopApi.Application.Requests.Barber
+namespace BarberShopApi.Application.Requests.Barber.EditBarber
 {
-    public class CreateBarberRequest
+    public class EditBarberRequest
     {
-        [JsonIgnore]
         public Guid BarberShopId { get; set; }
-
+        public Guid BarberId { get; set; }
         public string Name { get; set; } = string.Empty;
         public int OpeningTime { get; set; }
         public int ClosingTime { get; set; }
@@ -16,7 +13,7 @@ namespace BarberShopApi.Application.Requests.Barber
 
         public void Validate()
         {
-            var validator = new CreateBarberValidator();    
+            var validator = new EditBarberValidator();
             var result = validator.Validate(this);
 
             if (result.IsValid is false)
@@ -25,6 +22,5 @@ namespace BarberShopApi.Application.Requests.Barber
                 throw new OnValidateException(errors);
             }
         }
-
     }
 }

@@ -79,6 +79,15 @@ namespace BarberShopApi.Application.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a the price should be at least 5.0.
+        /// </summary>
+        public static string INVALID_PRICE {
+            get {
+                return ResourceManager.GetString("INVALID_PRICE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a the name field cannot be empty.
         /// </summary>
         public static string NAME_IS_EMPTY {
