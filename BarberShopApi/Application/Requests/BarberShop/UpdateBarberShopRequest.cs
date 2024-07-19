@@ -6,6 +6,7 @@ namespace BarberShopApi.Application.Requests.Barber
     public class UpdateBarberShopRequest
     {
         public Guid Id { get; set; }
+        public Guid UserId { get; set; }
         public string Name { get; set; } = string.Empty;
 
         public void Validate()

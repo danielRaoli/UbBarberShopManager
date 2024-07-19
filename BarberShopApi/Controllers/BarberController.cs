@@ -1,11 +1,12 @@
 ﻿using BarberShopApi.Application.Requests.Barber;
 using BarberShopApi.Application.Requests.Barber.AddService;
 using BarberShopApi.Domain.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BarberShopApi.Controllers
 {
-
     [ApiController]
     [Route("[controller]")]
     public class BarberController : ControllerBase
@@ -17,19 +18,24 @@ namespace BarberShopApi.Controllers
             _repository = repository;
         }
 
+        [Authorize(Roles = "barbershop")]
         [HttpPost("{barberid}/service")]
         public async Task<IActionResult> AddBarberService([FromRoute] Guid barberid, [FromBody] AddBarberServiceRequest request)
         {
+            
+
+
             request.BarberId = barberid;
-            var response = _repository.AddBarberService(request);
+            var response = await _repository.AddBarberService(request);
             return Ok(response);
         }
 
+        [Authorize(Roles = "barbershop")]
         [HttpDelete("{barberid}/service/{serviceid}")]
         public async Task<IActionResult> DeleteBarberService([FromRoute] Guid barberid, [FromRoute] Guid serviceid)
         {
             var request = new DeleteBarberServiceRequest { BarberId = barberid, ServiceId = serviceid};
-            var response = _repository.DeleteBarberService(request);
+            var response =await  _repository.DeleteBarberService(request);
 
             return Ok(response);
         }

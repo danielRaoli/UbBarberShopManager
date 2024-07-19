@@ -5,5 +5,6 @@ namespace BarberShopApi.Application.Requests.Barber
     {
         public Guid BarberShopId { get; set; }
         public Guid BarberId { get; set; }
+        public Guid UserId { get; set; }
     }
 }

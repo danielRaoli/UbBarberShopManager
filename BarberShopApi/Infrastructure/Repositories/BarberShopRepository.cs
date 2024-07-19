@@ -22,16 +22,22 @@ namespace BarberShopApi.Infrastructure.Repositories
 
         public async Task<Response<BarberShop>> CreateBarberShop(CreateBarberShopRequest request)
         {
-            var entity = new BarberShop { Name = request.Name };
-            _context.BarberShops.Add(entity);
+            var barberShop = await _context.BarberShops.FirstOrDefaultAsync(b => b.UserId == request.UserId);
+            if (barberShop is not null)
+            {
+                throw new Exception("this account already has a registered barbershop");
+            }
+
+            barberShop = new BarberShop { Name = request.Name, UserId = request.UserId };
+            _context.BarberShops.Add(barberShop);
             await _context.SaveChangesAsync();
 
-            return new Response<BarberShop>(entity, 201, "Barber shop registered with success");
+            return new Response<BarberShop>(barberShop, 201, "Barber shop registered with success");
         }
 
         public async Task<Response<BarberShop>> DeleteBarberShop(DeleteBarberShopRequest request)
         {
-            var barberShopDb = await _context.BarberShops.FirstOrDefaultAsync(b => b.Id == request.BarberShopId);
+            var barberShopDb = await _context.BarberShops.FirstOrDefaultAsync(b => b.Id == request.BarberShopId && b.UserId == request.UserId);
             if (barberShopDb is null)
             {
                 throw new NotFoundException(ResourceErrorMessages.NOT_FOUND_OBJECT);
@@ -45,6 +51,7 @@ namespace BarberShopApi.Infrastructure.Repositories
 
         public async Task<Response<List<BarberShop>>> GetAllBarberShops()
         {
+
             var barberShops = await _context.BarberShops.ToListAsync();
             return new Response<List<BarberShop>>(barberShops, 200);
         }
@@ -63,7 +70,7 @@ namespace BarberShopApi.Infrastructure.Repositories
 
         public async Task<Response<BarberShop>> UpdateBarberShop(UpdateBarberShopRequest request)
         {
-            var barberShopDb = await _context.BarberShops.FirstOrDefaultAsync(b => b.Id == request.Id);
+            var barberShopDb = await _context.BarberShops.FirstOrDefaultAsync(b => b.Id == request.Id && b.UserId == request.UserId);
             if (barberShopDb is null)
             {
                 throw new NotFoundException(ResourceErrorMessages.NOT_FOUND_OBJECT);
@@ -80,7 +87,7 @@ namespace BarberShopApi.Infrastructure.Repositories
 
         public async Task<Response<Barber>> CreateBarber(CreateBarberRequest request)
         {
-            var barberShop = await _context.BarberShops.FirstOrDefaultAsync(b => b.Id == request.BarberShopId);
+            var barberShop = await _context.BarberShops.FirstOrDefaultAsync(b => b.UserId == request.UserId && b.Id == request.BarberShopId);
 
             if (barberShop is null)
             {
@@ -97,6 +104,13 @@ namespace BarberShopApi.Infrastructure.Repositories
 
         public async Task<Response<Barber>> EditBarber(EditBarberRequest request)
         {
+            var barberShopExists = await _context.BarberShops.FirstOrDefaultAsync(b => b.UserId == request.UserId && b.Id == request.BarberShopId);
+
+            if(barberShopExists is null)
+            {
+                throw new NotFoundException(ResourceErrorMessages.NOT_FOUND_OBJECT);
+            }
+
             var entityBarber = await _context.Barbers.FirstOrDefaultAsync(b => b.BarberShopId == request.BarberShopId && b.Id == request.BarberId);
 
             if (entityBarber is null) 
@@ -116,6 +130,12 @@ namespace BarberShopApi.Infrastructure.Repositories
 
         public async Task<Response<Barber>> DeleteBarber(DeleteBarberRequest request)
         {
+            var barberShopExists = await _context.BarberShops.FirstOrDefaultAsync(b => b.UserId == request.UserId && b.Id == request.BarberShopId);
+
+            if (barberShopExists is null)
+            {
+                throw new NotFoundException(ResourceErrorMessages.NOT_FOUND_OBJECT);
+            }
             var entityBarber = await _context.Barbers.FirstOrDefaultAsync(b => b.BarberShopId == request.BarberShopId && b.Id == request.BarberId);
 
             if(entityBarber is null)

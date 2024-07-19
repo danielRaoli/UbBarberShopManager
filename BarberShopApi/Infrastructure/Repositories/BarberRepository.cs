@@ -16,8 +16,13 @@ namespace BarberShopApi.Infrastructure.Repositories
 
         public async Task<Response<Barber>> AddBarberService(AddBarberServiceRequest request)
         {
+            var barberShop = await _context.BarberShops.Include(b => b.Barbers).FirstOrDefaultAsync(b => b.UserId == request.UserId);
             var barber = await _context.Barbers.FirstOrDefaultAsync(b => b.Id == request.BarberId);
-
+            if (barber.BarberShopId != barberShop.Id)
+            {
+                throw new Exception("error");
+            }
+           
             if (barber is null)
             {
                 throw new NotFoundException(ResourceErrorMessages.NOT_FOUND_OBJECT);
@@ -33,7 +38,18 @@ namespace BarberShopApi.Infrastructure.Repositories
 
         public async Task<Response<Service>> DeleteBarberService(DeleteBarberServiceRequest request)
         {
-            var entityService = await _context.Services.FirstOrDefaultAsync(s => s.BarberId == request.BarberId && s.Id == request.ServiceId);
+            //verifico se o usuario que enviou a requisicao eh o dono da barbearia, caso seja, pego o barbeiro com o id do barbeiro que passei na requisicao, depois verifico se o barbeiro pertence aq
+            // a barbearia que eu passei, no primeiro momento eu so confiro a existencia e depois eu valido com um if, caso o id da barbearia do meu barbeiro
+            // seja diferente do id do da barbearia do usuario eh enviado um not foun
+            var barberShop = await _context.BarberShops.Include(b => b.Barbers).FirstOrDefaultAsync(b => b.UserId == request.UserId);
+            var barber = await _context.Barbers.Include(b => b.Services).FirstOrDefaultAsync(b => b.Id == request.BarberId);
+
+            if (barber.BarberShopId != barberShop.Id)
+            {
+                throw new NotFoundException(ResourceErrorMessages.NOT_FOUND_OBJECT);
+            }
+
+            var entityService = barber.Services.FirstOrDefault(s => s.Id == request.ServiceId);
 
             if (entityService is null)
             {

@@ -8,7 +8,8 @@ namespace BarberShopApi.Application.Requests.Barber.CreatedBarber
     {
         [JsonIgnore]
         public Guid BarberShopId { get; set; }
-
+        [JsonIgnore]
+        public Guid UserId { get; set; }
         public string Name { get; set; } = string.Empty;
         public int OpeningTime { get; set; }
         public int ClosingTime { get; set; }

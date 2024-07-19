@@ -6,6 +6,7 @@ namespace BarberShopApi.Application.Requests.Barber.EditBarber
     {
         public Guid BarberShopId { get; set; }
         public Guid BarberId { get; set; }
+        public Guid UserId { get; set; }
         public string Name { get; set; } = string.Empty;
         public int OpeningTime { get; set; }
         public int ClosingTime { get; set; }
