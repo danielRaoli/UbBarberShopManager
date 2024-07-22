@@ -13,7 +13,7 @@ namespace BarberShopApi.Domain.Entities
         [JsonIgnore]
         public BarberShop BarberShop { get; set; }
         public List<Service> Services { get; set; } = [];
-        public List<Agendamento> Agendamentos { get; set; } = [];
+        public List<Schedule> Agendamentos { get; set; } = [];
 
     }
 }

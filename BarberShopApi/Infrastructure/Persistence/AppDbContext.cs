@@ -10,25 +10,23 @@ namespace BarberShopApi.Infrastructure.Persistence
         public DbSet<BarberShop> BarberShops { get; set; }
         public DbSet<Barber> Barbers { get; set; }
         public DbSet<Service> Services { get; set; }
-        public DbSet<Agendamento> Agendamentos { get; set; }
+        public DbSet<Schedule> Schedules { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<BarberShop>().HasMany(b => b.Barbers).WithOne(b => b.BarberShop).HasForeignKey(b => b.BarberShopId);
 
-            modelBuilder.Entity<Barber>().HasMany(b => b.Services).WithOne(s => s.Baber).HasForeignKey(s => s.BarberId);
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Agendamento>()
-                        .HasOne(a => a.Barber)
-                        .WithMany()
-                        .HasForeignKey(a => a.BarberId)
-                        .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Service>().HasOne(s => s.Baber).WithMany(b => b.Services).HasForeignKey(s => s.BarberId);
 
-            modelBuilder.Entity<Agendamento>()
-                        .HasOne(a => a.Service)
-                        .WithMany()
-                        .HasForeignKey(a => a.ServiceId)
-                        .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Schedule>()
+            .HasOne(a => a.Service)
+            .WithMany()
+            .HasForeignKey(a => a.ServiceId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+            base.OnModelCreating(modelBuilder);
+
+                        
 
 
         }

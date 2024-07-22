@@ -22,35 +22,6 @@ namespace BarberShopApi.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("BarberShopApi.Domain.Entities.Agendamento", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BarberId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("BarberId1")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("ServiceId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BarberId");
-
-                    b.HasIndex("BarberId1");
-
-                    b.HasIndex("ServiceId");
-
-                    b.ToTable("Agendamentos");
-                });
-
             modelBuilder.Entity("BarberShopApi.Domain.Entities.Barber", b =>
                 {
                     b.Property<Guid>("Id")
@@ -95,6 +66,35 @@ namespace BarberShopApi.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("BarberShops");
+                });
+
+            modelBuilder.Entity("BarberShopApi.Domain.Entities.Schedule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("BarberId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ServiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BarberId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Schedules");
                 });
 
             modelBuilder.Entity("BarberShopApi.Domain.Entities.Service", b =>
@@ -317,29 +317,6 @@ namespace BarberShopApi.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("BarberShopApi.Domain.Entities.Agendamento", b =>
-                {
-                    b.HasOne("BarberShopApi.Domain.Entities.Barber", "Barber")
-                        .WithMany()
-                        .HasForeignKey("BarberId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("BarberShopApi.Domain.Entities.Barber", null)
-                        .WithMany("Agendamentos")
-                        .HasForeignKey("BarberId1");
-
-                    b.HasOne("BarberShopApi.Domain.Entities.Service", "Service")
-                        .WithMany()
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Barber");
-
-                    b.Navigation("Service");
-                });
-
             modelBuilder.Entity("BarberShopApi.Domain.Entities.Barber", b =>
                 {
                     b.HasOne("BarberShopApi.Domain.Entities.BarberShop", "BarberShop")
@@ -358,6 +335,29 @@ namespace BarberShopApi.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BarberShopApi.Domain.Entities.Schedule", b =>
+                {
+                    b.HasOne("BarberShopApi.Domain.Entities.Barber", null)
+                        .WithMany("Agendamentos")
+                        .HasForeignKey("BarberId");
+
+                    b.HasOne("BarberShopApi.Domain.Entities.Service", "Service")
+                        .WithMany()
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("BarberShopApi.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Service");
 
                     b.Navigation("User");
                 });

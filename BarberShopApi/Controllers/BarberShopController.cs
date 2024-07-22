@@ -1,6 +1,7 @@
 ﻿using BarberShopApi.Application.Requests.Barber;
 using BarberShopApi.Application.Requests.Barber.CreatedBarber;
 using BarberShopApi.Application.Requests.Barber.EditBarber;
+using BarberShopApi.Application.Requests.BarberShop;
 using BarberShopApi.Domain.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,21 +33,14 @@ namespace BarberShopApi.Controllers
             return Ok(response);
         }
 
-        [AllowAnonymous]
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetBarberShop([FromRoute] Guid id)
+        [HttpGet("/mybarber")]
+        [Authorize(Roles = "barbershop")]
+        public async Task<IActionResult> GetMyBarber()
         {
-            var request = new GetBarberShopRequest { Id = id };
-            var response = await _repository.GetBarberShop(request);
+            var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            var request = new GetMyBarberRequest { UserId = Guid.Parse(claimId.Value) };
+            var response = await _repository.GetMyBarber(request);
 
-            return Ok(response);
-        }
-
-        [Authorize(Roles ="client")]
-        [HttpGet]
-        public async Task<IActionResult> GetAllBarberShops()
-        {
-            var response = await _repository.GetAllBarberShops();
             return Ok(response);
         }
 
@@ -78,7 +72,7 @@ namespace BarberShopApi.Controllers
         }
 
         [Authorize(Roles ="barbershop")]
-        [HttpPost("{barbershopid}/barber")]
+        [HttpPost("{barbershopid}/barber")]                                
         public async Task<IActionResult> RegisterBarber([FromRoute] Guid barbershopid, [FromBody] CreateBarberRequest request)
         {
             var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
@@ -87,7 +81,7 @@ namespace BarberShopApi.Controllers
 
             var response = await _repository.CreateBarber(request);
 
-            return Ok(response);
+            return Ok(response);                                              
         }
 
         [Authorize(Roles = "barbershop")]

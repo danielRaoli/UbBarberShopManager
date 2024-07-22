@@ -217,39 +217,35 @@ namespace BarberShopApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Agendamentos",
+                name: "Schedules",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    BarberId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
-
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    BarberId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Agendamentos", x => x.Id);
+                    table.PrimaryKey("PK_Schedules", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Agendamentos_Barbers_BarberId",
+                        name: "FK_Schedules_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Schedules_Barbers_BarberId",
                         column: x => x.BarberId,
                         principalTable: "Barbers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Agendamentos_Services_ServiceId",
+                        name: "FK_Schedules_Services_ServiceId",
                         column: x => x.ServiceId,
                         principalTable: "Services",
                         principalColumn: "Id");
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Agendamentos_BarberId",
-                table: "Agendamentos",
-                column: "BarberId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Agendamentos_ServiceId",
-                table: "Agendamentos",
-                column: "ServiceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -301,6 +297,21 @@ namespace BarberShopApi.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Schedules_BarberId",
+                table: "Schedules",
+                column: "BarberId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Schedules_ServiceId",
+                table: "Schedules",
+                column: "ServiceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Schedules_UserId",
+                table: "Schedules",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Services_BarberId",
                 table: "Services",
                 column: "BarberId");
@@ -309,9 +320,6 @@ namespace BarberShopApi.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Agendamentos");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -328,10 +336,13 @@ namespace BarberShopApi.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Services");
+                name: "Schedules");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Services");
 
             migrationBuilder.DropTable(
                 name: "Barbers");

@@ -22,9 +22,8 @@ namespace BarberShopApi.Controllers
         [HttpPost("{barberid}/service")]
         public async Task<IActionResult> AddBarberService([FromRoute] Guid barberid, [FromBody] AddBarberServiceRequest request)
         {
-            
-
-
+            var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            request.UserId = Guid.Parse(claimId.Value);
             request.BarberId = barberid;
             var response = await _repository.AddBarberService(request);
             return Ok(response);
@@ -34,7 +33,8 @@ namespace BarberShopApi.Controllers
         [HttpDelete("{barberid}/service/{serviceid}")]
         public async Task<IActionResult> DeleteBarberService([FromRoute] Guid barberid, [FromRoute] Guid serviceid)
         {
-            var request = new DeleteBarberServiceRequest { BarberId = barberid, ServiceId = serviceid};
+            var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            var request = new DeleteBarberServiceRequest { BarberId = barberid, ServiceId = serviceid, UserId = Guid.Parse(claimId.Value)};
             var response =await  _repository.DeleteBarberService(request);
 
             return Ok(response);

@@ -2,6 +2,7 @@
 using BarberShopApi.Application.Requests.Barber;
 using BarberShopApi.Application.Requests.Barber.CreatedBarber;
 using BarberShopApi.Application.Requests.Barber.EditBarber;
+using BarberShopApi.Application.Requests.BarberShop;
 using BarberShopApi.Application.Responses;
 using BarberShopApi.Domain.Entities;
 using BarberShopApi.Domain.Repositories;
@@ -35,6 +36,19 @@ namespace BarberShopApi.Infrastructure.Repositories
             return new Response<BarberShop>(barberShop, 201, "Barber shop registered with success");
         }
 
+        public async Task<Response<BarberShop>> GetMyBarber(GetMyBarberRequest request)
+        {
+            if (request.UserId == Guid.Empty)
+            {
+                throw new NotFoundException(ResourceErrorMessages.NOT_FOUND_OBJECT);
+            }
+
+            var barberShop = await _context.BarberShops.FirstOrDefaultAsync(b => b.UserId == request.UserId);
+
+            return barberShop is null ? throw new NotFoundException(ResourceErrorMessages.NOT_FOUND_OBJECT) : new Response<BarberShop>(barberShop, 200);
+
+        }
+
         public async Task<Response<BarberShop>> DeleteBarberShop(DeleteBarberShopRequest request)
         {
             var barberShopDb = await _context.BarberShops.FirstOrDefaultAsync(b => b.Id == request.BarberShopId && b.UserId == request.UserId);
@@ -47,25 +61,6 @@ namespace BarberShopApi.Infrastructure.Repositories
             await _context.SaveChangesAsync();
 
             return new Response<BarberShop>(barberShopDb, 204, "Barber Shop removed with success");
-        }
-
-        public async Task<Response<List<BarberShop>>> GetAllBarberShops()
-        {
-
-            var barberShops = await _context.BarberShops.ToListAsync();
-            return new Response<List<BarberShop>>(barberShops, 200);
-        }
-
-        public async Task<Response<BarberShop>> GetBarberShop(GetBarberShopRequest request)
-        {
-            var barberShopDb = await _context.BarberShops.Include(b => b.Barbers).ThenInclude(b => b.Services).FirstOrDefaultAsync(b => b.Id == request.Id);
-            if (barberShopDb is null)
-            {
-                throw new NotFoundException(ResourceErrorMessages.NOT_FOUND_OBJECT);
-            }
-
-            return new Response<BarberShop>(barberShopDb, 200);
-
         }
 
         public async Task<Response<BarberShop>> UpdateBarberShop(UpdateBarberShopRequest request)
