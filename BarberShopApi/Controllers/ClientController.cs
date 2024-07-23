@@ -1,7 +1,9 @@
 ﻿using BarberShopApi.Application.Requests.Barber;
 using BarberShopApi.Application.Requests.Client;
+using BarberShopApi.Domain.Enums;
 using BarberShopApi.Domain.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -26,7 +28,7 @@ namespace BarberShopApi.Controllers
 
       
         [HttpGet]
-        [Authorize(Policy = "clientrole")]
+        [Authorize(Roles = "client")]
         public async Task<IActionResult> GetAllBarberShops()
         {
             var response = await _repository.GetAllBarberShops();
@@ -37,11 +39,23 @@ namespace BarberShopApi.Controllers
         [HttpPost("/schedule/{serviceid}")]
         public async Task<IActionResult> ScheduleService([FromRoute] Guid serviceid, [FromBody] ScheduleServiceRequest request)
         {
+            request.Validate();
             var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             request.ServiceId = serviceid;
             request.UserId = Guid.Parse(claimId.Value);
             var response = await _repository.Schedule(request);
             return Ok(response);
+        }
+
+        [Authorize(Roles = "client")]
+        [HttpGet("schedule")]
+        public async Task<IActionResult> GetScheduleHistory()
+        {
+            var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            var request = new GetUserScheduleHistory { UserId = Guid.Parse(claimId.Value) };
+            var response = await _repository.GetUserScheduleHistory(request);   
+
+            return Ok(response);    
         }
     }
 }

@@ -120,6 +120,9 @@
   <data name="BARBER_NAME_SIZE" xml:space="preserve">
     <value>the name must be between 2 and 40 characters</value>
   </data>
+  <data name="INVALID_DATE" xml:space="preserve">
+    <value>invalid date for schedule</value>
+  </data>
   <data name="INVALID_INTERVAL_HOURS" xml:space="preserve">
     <value>this break in hours is not valid</value>
   </data>
@@ -131,5 +134,8 @@
   </data>
   <data name="NOT_FOUND_OBJECT" xml:space="preserve">
     <value>No records found</value>
+  </data>
+  <data name="UNAUTHORIZE" xml:space="preserve">
+    <value>access not allowed</value>
   </data>
 </root>

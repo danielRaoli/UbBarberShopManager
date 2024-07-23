@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BarberShopApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240722195022_first")]
+    [Migration("20240723161642_first")]
     partial class first
     {
         /// <inheritdoc />
@@ -345,7 +345,7 @@ namespace BarberShopApi.Migrations
             modelBuilder.Entity("BarberShopApi.Domain.Entities.Schedule", b =>
                 {
                     b.HasOne("BarberShopApi.Domain.Entities.Barber", null)
-                        .WithMany("Agendamentos")
+                        .WithMany("Schedules")
                         .HasForeignKey("BarberId");
 
                     b.HasOne("BarberShopApi.Domain.Entities.Service", "Service")
@@ -429,7 +429,7 @@ namespace BarberShopApi.Migrations
 
             modelBuilder.Entity("BarberShopApi.Domain.Entities.Barber", b =>
                 {
-                    b.Navigation("Agendamentos");
+                    b.Navigation("Schedules");
 
                     b.Navigation("Services");
                 });

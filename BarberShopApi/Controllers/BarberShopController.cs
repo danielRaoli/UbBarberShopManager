@@ -85,6 +85,18 @@ namespace BarberShopApi.Controllers
         }
 
         [Authorize(Roles = "barbershop")]
+        [HttpGet("{barberid}/barber/history")]
+        public async Task<IActionResult> GetBarberHistorySchedule([FromRoute] Guid barberid)
+        {
+            var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            var request = new GetBarberHistoryScheduleRequest { BarberId = barberid, UserId = Guid.Parse(claimId.Value)};
+
+            var response = await _repository.GetBarberHistory(request);
+
+            return Ok(response);
+        }
+
+        [Authorize(Roles = "barbershop")]
         [HttpPut("{barbershopid}/barber/{barberid}")]
         public async Task<IActionResult> UpdateBarber([FromRoute] Guid barbershopid, [FromRoute] Guid barberid, [FromBody] EditBarberRequest request)
         {
@@ -114,6 +126,8 @@ namespace BarberShopApi.Controllers
             var response = await _repository.DeleteBarber(request);
             return Ok(response);
         }
+
+
 
 
     }

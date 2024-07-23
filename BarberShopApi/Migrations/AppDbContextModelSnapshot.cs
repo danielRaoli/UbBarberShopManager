@@ -342,7 +342,7 @@ namespace BarberShopApi.Migrations
             modelBuilder.Entity("BarberShopApi.Domain.Entities.Schedule", b =>
                 {
                     b.HasOne("BarberShopApi.Domain.Entities.Barber", null)
-                        .WithMany("Agendamentos")
+                        .WithMany("Schedules")
                         .HasForeignKey("BarberId");
 
                     b.HasOne("BarberShopApi.Domain.Entities.Service", "Service")
@@ -426,7 +426,7 @@ namespace BarberShopApi.Migrations
 
             modelBuilder.Entity("BarberShopApi.Domain.Entities.Barber", b =>
                 {
-                    b.Navigation("Agendamentos");
+                    b.Navigation("Schedules");
 
                     b.Navigation("Services");
                 });

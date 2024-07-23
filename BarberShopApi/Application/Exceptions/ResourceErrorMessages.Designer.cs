@@ -70,6 +70,15 @@ namespace BarberShopApi.Application.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a invalid date for schedule.
+        /// </summary>
+        public static string INVALID_DATE {
+            get {
+                return ResourceManager.GetString("INVALID_DATE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a this break in hours is not valid.
         /// </summary>
         public static string INVALID_INTERVAL_HOURS {
@@ -102,6 +111,15 @@ namespace BarberShopApi.Application.Exceptions {
         public static string NOT_FOUND_OBJECT {
             get {
                 return ResourceManager.GetString("NOT_FOUND_OBJECT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a access not allowed.
+        /// </summary>
+        public static string UNAUTHORIZE {
+            get {
+                return ResourceManager.GetString("UNAUTHORIZE", resourceCulture);
             }
         }
     }

@@ -36,18 +36,7 @@ namespace BarberShopApi.Infrastructure.Repositories
             return new Response<BarberShop>(barberShop, 201, "Barber shop registered with success");
         }
 
-        public async Task<Response<BarberShop>> GetMyBarber(GetMyBarberRequest request)
-        {
-            if (request.UserId == Guid.Empty)
-            {
-                throw new NotFoundException(ResourceErrorMessages.NOT_FOUND_OBJECT);
-            }
-
-            var barberShop = await _context.BarberShops.FirstOrDefaultAsync(b => b.UserId == request.UserId);
-
-            return barberShop is null ? throw new NotFoundException(ResourceErrorMessages.NOT_FOUND_OBJECT) : new Response<BarberShop>(barberShop, 200);
-
-        }
+       
 
         public async Task<Response<BarberShop>> DeleteBarberShop(DeleteBarberShopRequest request)
         {
@@ -96,7 +85,18 @@ namespace BarberShopApi.Infrastructure.Repositories
             return new Response<Barber>(entityBarber, 201, "Barber registered with success");
 
         }
+        public async Task<Response<BarberShop>> GetMyBarber(GetMyBarberRequest request)
+        {
+            if (request.UserId == Guid.Empty)
+            {
+                throw new NotFoundException(ResourceErrorMessages.NOT_FOUND_OBJECT);
+            }
 
+            var barberShop = await _context.BarberShops.FirstOrDefaultAsync(b => b.UserId == request.UserId);
+
+            return barberShop is null ? throw new NotFoundException(ResourceErrorMessages.NOT_FOUND_OBJECT) : new Response<BarberShop>(barberShop, 200);
+
+        }
         public async Task<Response<Barber>> EditBarber(EditBarberRequest request)
         {
             var barberShopExists = await _context.BarberShops.FirstOrDefaultAsync(b => b.UserId == request.UserId && b.Id == request.BarberShopId);
@@ -144,6 +144,14 @@ namespace BarberShopApi.Infrastructure.Repositories
             return new Response<Barber>(entityBarber, 204, "Barber removed with success");
         }
 
+        public async Task<Response<List<Schedule>>> GetBarberHistory(GetBarberHistoryScheduleRequest request)
+        {
+            if (request.UserId == Guid.Empty) throw new NotFoundException(ResourceErrorMessages.NOT_FOUND_OBJECT);
 
+            var schedulesList = await _context.Schedules.Where(s => s.Service.BarberId == request.BarberId).ToListAsync();
+
+            return new Response<List<Schedule>>(schedulesList, 200);
+
+        }
     }
 }

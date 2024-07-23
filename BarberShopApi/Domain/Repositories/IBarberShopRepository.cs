@@ -17,6 +17,6 @@ namespace BarberShopApi.Domain.Repositories
         Task<Response<Barber>> CreateBarber(CreateBarberRequest request);
         Task<Response<Barber>> EditBarber(EditBarberRequest request);
         Task<Response<Barber>> DeleteBarber(DeleteBarberRequest request);
-        
+        Task<Response<List<Schedule>>> GetBarberHistory(GetBarberHistoryScheduleRequest request);
     }
 }

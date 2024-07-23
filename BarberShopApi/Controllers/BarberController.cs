@@ -1,5 +1,7 @@
 ﻿using BarberShopApi.Application.Requests.Barber;
 using BarberShopApi.Application.Requests.Barber.AddService;
+using BarberShopApi.Application.Responses;
+using BarberShopApi.Domain.Entities;
 using BarberShopApi.Domain.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,8 +20,10 @@ namespace BarberShopApi.Controllers
             _repository = repository;
         }
 
+
         [Authorize(Roles = "barbershop")]
         [HttpPost("{barberid}/service")]
+        [ProducesResponseType(typeof(Response<>),201)]
         public async Task<IActionResult> AddBarberService([FromRoute] Guid barberid, [FromBody] AddBarberServiceRequest request)
         {
             var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
