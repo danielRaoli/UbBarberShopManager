@@ -7,8 +7,6 @@ namespace BarberShopApi.Application.Requests.Barber.CreatedBarber
     public class CreateBarberRequest
     {
         [JsonIgnore]
-        public Guid BarberShopId { get; set; }
-        [JsonIgnore]
         public Guid UserId { get; set; }
         public string Name { get; set; } = string.Empty;
         public int OpeningTime { get; set; }

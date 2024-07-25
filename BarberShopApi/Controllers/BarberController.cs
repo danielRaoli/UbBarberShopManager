@@ -11,6 +11,7 @@ namespace BarberShopApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize(Roles = "barbershop")]
     public class BarberController : ControllerBase
     {
         private readonly IBarberRepository _repository;
@@ -21,9 +22,19 @@ namespace BarberShopApi.Controllers
         }
 
 
-        [Authorize(Roles = "barbershop")]
+        /// <summary>
+        /// registra o serviço de um barbeiro
+        /// </summary>
+        /// <returns>Retorna a barbearia que foi criada</returns>
+        /// <response code="200">Retorna a barbearia</response>
+        /// <response code="401">Se o usuário não estiver autenticado</response>
+        /// <response code="400">caso exista erro na declaração do item</response>
+        /// <response code="404">caso o barbeiro não seja encontrado</response>
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPost("{barberid}/service")]
-        [ProducesResponseType(typeof(Response<>),201)]
         public async Task<IActionResult> AddBarberService([FromRoute] Guid barberid, [FromBody] AddBarberServiceRequest request)
         {
             var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
@@ -33,7 +44,17 @@ namespace BarberShopApi.Controllers
             return Ok(response);
         }
 
-        [Authorize(Roles = "barbershop")]
+        /// <summary>
+        /// Remove o serviço de um barbeiro
+        /// </summary>
+        /// <returns>Retorna o serviço removido</returns>
+        /// <response code="200">Retorna o serviço removido</response>
+        /// <response code="401">Se o usuário não estiver autenticado</response>
+        /// <response code="400">caso exista erro na declaração do item</response>
+        /// <response code="404">caso o barbeiro ou serviço não seja encontrado</response>
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpDelete("{barberid}/service/{serviceid}")]
         public async Task<IActionResult> DeleteBarberService([FromRoute] Guid barberid, [FromRoute] Guid serviceid)
         {

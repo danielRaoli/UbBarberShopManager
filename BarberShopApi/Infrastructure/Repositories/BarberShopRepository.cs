@@ -19,8 +19,6 @@ namespace BarberShopApi.Infrastructure.Repositories
             _context = context;
         }
 
-
-
         public async Task<Response<BarberShop>> CreateBarberShop(CreateBarberShopRequest request)
         {
             var barberShop = await _context.BarberShops.FirstOrDefaultAsync(b => b.UserId == request.UserId);
@@ -54,7 +52,7 @@ namespace BarberShopApi.Infrastructure.Repositories
 
         public async Task<Response<BarberShop>> UpdateBarberShop(UpdateBarberShopRequest request)
         {
-            var barberShopDb = await _context.BarberShops.FirstOrDefaultAsync(b => b.Id == request.Id && b.UserId == request.UserId);
+            var barberShopDb = await _context.BarberShops.FirstOrDefaultAsync(b => b.UserId == request.UserId);
             if (barberShopDb is null)
             {
                 throw new NotFoundException(ResourceErrorMessages.NOT_FOUND_OBJECT);
@@ -71,13 +69,13 @@ namespace BarberShopApi.Infrastructure.Repositories
 
         public async Task<Response<Barber>> CreateBarber(CreateBarberRequest request)
         {
-            var barberShop = await _context.BarberShops.FirstOrDefaultAsync(b => b.UserId == request.UserId && b.Id == request.BarberShopId);
+            var barberShop = await _context.BarberShops.FirstOrDefaultAsync(b => b.UserId == request.UserId );
 
             if (barberShop is null)
             {
                 throw new NotFoundException(ResourceErrorMessages.NOT_FOUND_OBJECT);
             }
-            var entityBarber = new Barber { Name = request.Name, ClosingTime = request.ClosingTime, OpeningTime = request.OpeningTime, BarberShopId = request.BarberShopId };
+            var entityBarber = new Barber { Name = request.Name, ClosingTime = request.ClosingTime, OpeningTime = request.OpeningTime, BarberShopId = barberShop.Id };
 
             _context.Barbers.Add(entityBarber);
             await _context.SaveChangesAsync();
